@@ -10,36 +10,53 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        ports:
-          - 5432:5432
-
-        volumes:
-          - ./database:/docker-entrypoint-initdb.d
-
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Adjust permissions for database scripts
-        run: chmod -R 777 ./database
+      - name: Set up Docker container for PostgreSQL
+        run: |
+          docker pull postgres:17-alpine
+          docker run -d \
+            --name test-postgres \
+            -e POSTGRES_USER=${{secrets.POSTGRES_USER}} \
+            -e POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD}} \
+            -v ${{ github.workspace }}/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro \
+            -p 5432:5432 \
+            postgres:17-alpine
 
-      - name: set up JDK 21
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          # Wait for PostgreSQL to be ready
+          for i in {1..10}; do
+            if docker exec test-postgres pg_isready -U postgres > /dev/null 2>&1; then
+              echo "PostgreSQL is ready!"
+              break
+            fi
+            echo "Waiting for PostgreSQL to be ready... ($i/30)"
+            sleep 2
+          done
+
+      - name: Database logs
+        if: always()
+        run: docker logs test-postgres
+
+      - name: Database container inspection
+        if: always()
+        run: docker inspect test-postgres
+
+      - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
           java-version: 21
           distribution: "temurin"
           cache: "maven"
 
-      - name: make maven wrapper executable
+      - name: Make maven wrapper executable
         working-directory: ./backend
         run: chmod +x mvnw
-      - name: build-and-test with mvnw
+
+      - name: Build and test with mvnw
         working-directory: ./backend
         env:
           POSTGRES_DB_HOST: localhost
@@ -50,9 +67,9 @@ jobs:
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
         run: ./mvnw clean test
 
-      - name: upload test results
+      - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: ./backend/target/test-run-reports/
+          path: ./backend/target/surefire-reports/
