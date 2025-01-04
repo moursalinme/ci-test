@@ -10,11 +10,11 @@ on:
       environment:
         description: "Environment to run tests against"
         required: true
-        default: "test"
+        default: "dev"
         type: choice
         options:
+          - dev
           - test
-          - staging
       debug_enabled:
         description: "Enable debug logging"
         required: false
@@ -33,32 +33,20 @@ jobs:
         run: |
           docker pull postgres:17-alpine
           docker run -d \
-            --name test-postgres \
-            -e POSTGRES_USER=${{secrets.POSTGRES_USER || 'postgres'}} \
-            -e POSTGRES_PASSWORD=${{secrets.POSTGRES_PASSWORD || '123456'}} \
+            --name ${{ secrets.DB_CONTAINER_NAME }} \
+            -e POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            -e POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
             -v ${{ github.workspace }}/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro \
             -p 5432:5432 \
             postgres:17-alpine
 
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          # Wait for PostgreSQL to be ready
-          for i in {1..10}; do
-            if docker exec test-postgres pg_isready -U postgres > /dev/null 2>&1; then
-              echo "PostgreSQL is ready!"
-              break
-            fi
-            echo "Waiting for PostgreSQL to be ready... ($i/30)"
-            sleep 2
-          done
-
       - name: Database logs
         if: always()
-        run: docker logs test-postgres
+        run: docker logs ${{ secrets.DB_CONTAINER_NAME }}
 
       - name: Database container inspection
         if: always()
-        run: docker inspect test-postgres
+        run: docker inspect ${{ secrets.DB_CONTAINER_NAME }}
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
@@ -76,10 +64,10 @@ jobs:
         env:
           POSTGRES_DB_HOST: localhost
           POSTGRES_DB_PORT: 5432
-          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME || 'pet_store' }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || '123456' }}
-          SERVER_PORT: ${{ secrets.SERVER_PORT || '8080' }}
+          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SERVER_PORT: ${{ secrets.BACKEND_SERVER_PORT }}
         run: ./mvnw clean test
 
       - name: Upload test results
