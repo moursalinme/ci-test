@@ -76,10 +76,10 @@ jobs:
         env:
           POSTGRES_DB_HOST: localhost
           POSTGRES_DB_PORT: 5432
-          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME || pet_store }}
+          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME || 'pet_store' }}
           POSTGRES_USER: ${{ secrets.POSTGRES_USER || 'postgres' }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || 'password' }}
-          SERVER_PORT: ${{ secrets.SERVER_PORT || 8080 }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD || '123456' }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '8080' }}
         run: ./mvnw clean test
 
       - name: Upload test results
