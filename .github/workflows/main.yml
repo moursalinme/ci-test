@@ -1,0 +1,55 @@
+name: Run tests - Backend
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main", "dev"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+
+        volumes:
+          - ${{ github.workspace }}/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: 21
+          distribution: "temurin"
+          cache: "maven"
+
+      - name: make maven wrapper executable
+        working-directory: ./backend
+        run: chmod +x mvnw
+      - name: build-and-test with mvnw
+        working-directory: ./backend
+        env:
+          POSTGRES_DB_HOST: localhost
+          POSTGRES_DB_PORT: 5432
+          POSTGRES_DB_NAME: ${{ secrets.POSTGRES_DB_NAME }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+        run: ./mvnw clean test
+
+      - name: upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: ./backend/target/test-run-reports/
