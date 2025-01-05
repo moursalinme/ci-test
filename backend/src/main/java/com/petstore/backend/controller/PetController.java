@@ -1,7 +1,9 @@
 package com.petstore.backend.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.petstore.backend.dto.request.PetRequest;
+import com.petstore.backend.dto.response.PetPageResponse;
 import com.petstore.backend.dto.response.PetResponse;
 import com.petstore.backend.service.PetService;
 import com.petstore.backend.service.SpeciesService;
@@ -28,10 +32,39 @@ public class PetController {
     private final PetService petService;
     private final SpeciesService speciesService;
 
-    @GetMapping("/pets")
-    public ResponseEntity<List<PetResponse>> getAllPets() {
-        List<PetResponse> pets = petService.getAllPets();
-        return ResponseEntity.ok().body(pets);
+    // @GetMapping("/pets")
+    // public ResponseEntity<List<PetResponse>> getAllPets() {
+    // List<PetResponse> pets = petService.getAllPets();
+    // return ResponseEntity.ok().body(pets);
+    // }
+
+    @GetMapping("/pets/{page}")
+    public ResponseEntity<PetPageResponse> getPetsByPage(@PathVariable int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        if (page <= 0 || size <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        size = Math.min(size, 100);
+
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id"));
+
+        Page<PetResponse> response = petService.getPaginatedPets(pageable);
+
+        if (response.getTotalPages() < page) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        PetPageResponse petPageResponse = PetPageResponse.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .totalPages(response.getTotalPages())
+                .totalPets(Math.toIntExact(response.getTotalElements()))
+                .pets(response.getContent())
+                .build();
+
+        return ResponseEntity.ok().body(petPageResponse);
     }
 
     @GetMapping("/pets/{id}")
