@@ -15,5 +15,5 @@ public interface PetService {
 
     PetResponse updatePet(Long id, PetRequest pet);
 
-    void deletePetById(Long id);
+    boolean deletePetById(Long id);
 }
