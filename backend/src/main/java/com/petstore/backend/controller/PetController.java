@@ -2,16 +2,22 @@ package com.petstore.backend.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.petstore.backend.dto.request.PetRequest;
 import com.petstore.backend.dto.response.PetResponse;
 import com.petstore.backend.service.PetService;
+import com.petstore.backend.service.SpeciesService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -20,35 +26,51 @@ import lombok.RequiredArgsConstructor;
 public class PetController {
 
     private final PetService petService;
+    private final SpeciesService speciesService;
 
     @GetMapping("/pets")
-    public List<PetResponse> getAllPets() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPets'");
+    public ResponseEntity<List<PetResponse>> getAllPets() {
+        List<PetResponse> pets = petService.getAllPets();
+        return ResponseEntity.ok().body(pets);
     }
 
     @GetMapping("/pets/{id}")
-    public PetResponse getPetById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPetById'");
+    public ResponseEntity<PetResponse> getPetById(@PathVariable Long id) {
+        if (id == null || id < 1) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        PetResponse pet;
+        try {
+            pet = petService.getPetById(id);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(pet);
     }
 
     @PostMapping("/pets")
-    public PetResponse createPet(PetRequest pet) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPet'");
+    public ResponseEntity<PetResponse> createPet(@RequestBody PetRequest pet) {
+        pet.setSpeciesEntity(speciesService.getSpeciesByName(pet.getSpecies()));
+
+        PetResponse createdPet = petService.createPet(pet);
+        return ResponseEntity.ok().body(createdPet);
     }
 
-    @PostMapping("/pets/{id}")
-    public PetResponse updatePet(Long id, PetRequest pet) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePet'");
+    @PatchMapping("/pets/{id}")
+    public ResponseEntity<PetResponse> updatePet(@PathVariable Long id, @RequestBody PetRequest pet) {
+        pet.setSpeciesEntity(speciesService.getSpeciesByName(pet.getSpecies()));
+
+        PetResponse updatedPet = petService.updatePet(id, pet);
+        return ResponseEntity.ok().body(updatedPet);
     }
 
     @DeleteMapping("/pets/{id}")
-    public void deletePet(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletePet'");
+    public ResponseEntity<String> deletePet(@PathVariable Long id) {
+        if (id == null || id < 1) {
+            return ResponseEntity.badRequest().body("Invalid Id.");
+        }
+        petService.deletePetById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
