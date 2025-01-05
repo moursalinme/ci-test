@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,6 +66,34 @@ public class PetServiceImplTest {
         assertNotNull(createdPet);
         assertEquals(testPetResponse, createdPet);
         verify(petRepository).save(any(Pet.class));
+    }
+
+    @Test
+    void getPetById_ValidPetId_ShouldReturnPet() {
+        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
+
+        PetResponse pet = petService.getPetById(1L);
+
+        assertNotNull(pet);
+        assertEquals(testPetResponse, pet);
+        verify(petRepository).findById(1L);
+    }
+
+    @Test
+    void getPetById_InvalidPetId_ShouldReturnNull() {
+        when(petRepository.findById(1L)).thenReturn(Optional.empty());
+
+        PetResponse pet = petService.getPetById(1L);
+
+        assertEquals(null, pet);
+        verify(petRepository).findById(1L);
+    }
+
+    @Test
+    void getPetById_NullPetId_ShouldReturnNull() {
+        PetResponse pet = petService.getPetById(null);
+
+        assertEquals(null, pet);
     }
 
 }
