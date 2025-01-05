@@ -12,6 +12,7 @@ import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.PetService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -57,9 +58,24 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public PetResponse updatePet(Long id, PetRequest pet) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePet'");
+    @Transactional
+    public PetResponse updatePet(Long id, PetRequest petRequest) {
+        if (id == null || petRequest == null) {
+            throw new IllegalArgumentException("Pet ID and Pet request must not be null");
+        }
+
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + id));
+
+        pet.setName(petRequest.getName());
+        pet.setAge(petRequest.getAge());
+        pet.setBreed(petRequest.getBreed());
+        pet.setGender(petRequest.getGender());
+        pet.setStatus(petRequest.getStatus());
+        pet.setSpecies(petRequest.getSpeciesEntity());
+
+        Pet updatedPet = petRepository.save(pet);
+        return Mapper.toPetResponse(updatedPet);
     }
 
     @Override
