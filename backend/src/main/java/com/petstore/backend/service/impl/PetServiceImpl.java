@@ -23,8 +23,9 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public List<PetResponse> getAllPets() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllPets'");
+        return petRepository.findAll().stream()
+                .map(Mapper::toPetResponse)
+                .toList();
     }
 
     @Override
