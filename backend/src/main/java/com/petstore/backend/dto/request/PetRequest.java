@@ -1,5 +1,7 @@
 package com.petstore.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.petstore.backend.entity.Species;
 import com.petstore.backend.enums.PetGender;
 import com.petstore.backend.enums.PetStatus;
 
@@ -35,4 +37,7 @@ public class PetRequest {
 
     @NotNull(message = "Status is required")
     private PetStatus status;
+
+    @JsonIgnore
+    private Species speciesEntity;
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.petstore.backend.dto.request.PetRequest;
 import com.petstore.backend.dto.response.PetResponse;
 import com.petstore.backend.entity.Pet;
-import com.petstore.backend.entity.Species;
 import com.petstore.backend.mapper.Mapper;
 import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.PetService;
@@ -45,17 +44,13 @@ public class PetServiceImpl implements PetService {
             throw new IllegalArgumentException("PetRequest cannot be null");
         }
 
-        Species petSpecies = Species.builder()
-                .name(pet.getSpecies())
-                .build();
-
         Pet petEntity = Pet.builder()
                 .name(pet.getName())
                 .age(pet.getAge())
                 .breed(pet.getBreed())
                 .gender(pet.getGender())
                 .status(pet.getStatus())
-                .species(petSpecies)
+                .species(pet.getSpeciesEntity())
                 .build();
         petEntity = petRepository.save(petEntity);
         return Mapper.toPetResponse(petEntity);
