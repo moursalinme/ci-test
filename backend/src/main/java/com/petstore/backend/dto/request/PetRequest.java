@@ -38,6 +38,8 @@ public class PetRequest {
     @NotNull(message = "Status is required")
     private PetStatus status;
 
+    private Integer version;
+
     @JsonIgnore
     private Species speciesEntity;
 }
