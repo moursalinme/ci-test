@@ -2,6 +2,8 @@ package com.petstore.backend.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.petstore.backend.dto.request.PetRequest;
@@ -89,6 +91,12 @@ public class PetServiceImpl implements PetService {
         }
         petRepository.deleteById(id);
         return true;
+    }
+
+    @Override
+    public Page<PetResponse> getPaginatedPets(Pageable pageable) {
+        return petRepository.findAll(pageable)
+                .map(Mapper::toPetResponse);
     }
 
 }
