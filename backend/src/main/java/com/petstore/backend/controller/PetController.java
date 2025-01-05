@@ -69,7 +69,9 @@ public class PetController {
         if (id == null || id < 1) {
             return ResponseEntity.badRequest().body("Invalid Id.");
         }
-        petService.deletePetById(id);
+        boolean deleted = petService.deletePetById(id);
+        if (!deleted)
+            return ResponseEntity.internalServerError().build();
         return ResponseEntity.noContent().build();
     }
 
