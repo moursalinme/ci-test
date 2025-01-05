@@ -2,6 +2,7 @@ package com.petstore.backend;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,8 @@ import com.petstore.backend.enums.PetGender;
 import com.petstore.backend.enums.PetStatus;
 import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.impl.PetServiceImpl;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 public class PetServiceImplTest {
@@ -80,20 +83,16 @@ public class PetServiceImplTest {
     }
 
     @Test
-    void getPetById_InvalidPetId_ShouldReturnNull() {
+    void getPetById_InvalidPetId_ShouldThrowEntityNotFoundException() {
         when(petRepository.findById(1L)).thenReturn(Optional.empty());
 
-        PetResponse pet = petService.getPetById(1L);
-
-        assertEquals(null, pet);
+        assertThrows(EntityNotFoundException.class, () -> petService.getPetById(1L));
         verify(petRepository).findById(1L);
     }
 
     @Test
-    void getPetById_NullPetId_ShouldReturnNull() {
-        PetResponse pet = petService.getPetById(null);
-
-        assertEquals(null, pet);
+    void getPetById_NullPetId_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> petService.getPetById(null));
     }
 
 }
