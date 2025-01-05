@@ -69,8 +69,14 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public void deletePetById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deletePet'");
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Id is invalid or null");
+        }
+        boolean exists = petRepository.existsById(id);
+        if (!exists) {
+            throw new EntityNotFoundException("Pet with ID " + id + " not found");
+        }
+        petRepository.deleteById(id);
     }
 
 }
