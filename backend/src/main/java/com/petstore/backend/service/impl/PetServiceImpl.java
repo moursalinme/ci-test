@@ -79,7 +79,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void deletePetById(Long id) {
+    public boolean deletePetById(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Id is invalid or null");
         }
@@ -88,6 +88,7 @@ public class PetServiceImpl implements PetService {
             throw new EntityNotFoundException("Pet with ID " + id + " not found");
         }
         petRepository.deleteById(id);
+        return true;
     }
 
 }
