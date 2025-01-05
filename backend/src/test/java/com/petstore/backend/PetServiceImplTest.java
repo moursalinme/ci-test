@@ -101,7 +101,7 @@ public class PetServiceImplTest {
 
         updatePetRequest = PetRequest.builder()
                 .name("update Pet")
-                .age(5)
+                .age(10)
                 .gender(PetGender.FEMALE)
                 .status(PetStatus.SOLD)
                 .breed("update breed")
@@ -112,7 +112,7 @@ public class PetServiceImplTest {
                 .id(1L)
                 .name("update Pet")
                 .species(updatedSpecies)
-                .age(5)
+                .age(10)
                 .gender(PetGender.FEMALE)
                 .status(PetStatus.SOLD)
                 .breed("update breed")
@@ -223,7 +223,7 @@ public class PetServiceImplTest {
 
         PetResponse response = petService.updatePet(petId, updatePetRequest);
 
-        assertEquals(updatedPet, response);
+        assertEquals(Mapper.toPetResponse(updatedPet), response);
         verify(petRepository).findById(petId);
         verify(petRepository).save(any(Pet.class));
     }
