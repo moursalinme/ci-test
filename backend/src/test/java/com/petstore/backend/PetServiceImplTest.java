@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -126,5 +128,31 @@ public class PetServiceImplTest {
         assertEquals(Mapper.toPetResponse(testPet), petResponses.get(0));
         assertEquals(Mapper.toPetResponse(testPet), petResponses.get(1));
         verify(petRepository).findAll();
+    }
+
+    @Test
+    void deletePet_ValidId_ShouldDeletePet() {
+        Long petId = 1L;
+        doNothing().when(petRepository).deleteById(petId);
+
+        petService.deletePetById(petId);
+
+        verify(petRepository).deleteById(petId);
+    }
+
+    @Test
+    void deletePet_NonExistingId_ShouldThrowEntityNotFoundException() {
+        Long petId = 1L;
+        doThrow(new EntityNotFoundException("Pet with ID " + petId + " not found"))
+                .when(petRepository).deleteById(petId);
+
+        assertThrows(EntityNotFoundException.class,
+                () -> petService.deletePetById(petId));
+    }
+
+    @Test
+    void deletePet_NullId_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> petService.deletePetById(null));
     }
 }
