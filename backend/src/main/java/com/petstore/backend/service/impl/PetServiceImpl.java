@@ -6,10 +6,19 @@ import org.springframework.stereotype.Service;
 
 import com.petstore.backend.dto.request.PetRequest;
 import com.petstore.backend.dto.response.PetResponse;
+import com.petstore.backend.entity.Pet;
+import com.petstore.backend.entity.Species;
+import com.petstore.backend.mapper.Mapper;
+import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.PetService;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
+
+    private final PetRepository petRepository;
 
     @Override
     public List<PetResponse> getAllPets() {
@@ -25,8 +34,25 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public PetResponse createPet(PetRequest pet) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createPet'");
+
+        if (pet == null) {
+            throw new IllegalArgumentException("PetRequest cannot be null");
+        }
+
+        Species petSpecies = Species.builder()
+                .name(pet.getSpecies())
+                .build();
+
+        Pet petEntity = Pet.builder()
+                .name(pet.getName())
+                .age(pet.getAge())
+                .breed(pet.getBreed())
+                .gender(pet.getGender())
+                .status(pet.getStatus())
+                .species(petSpecies)
+                .build();
+        petEntity = petRepository.save(petEntity);
+        return Mapper.toPetResponse(petEntity);
     }
 
     @Override
