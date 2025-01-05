@@ -68,7 +68,7 @@ public class PetServiceImpl implements PetService {
     }
 
     @Override
-    public void deletePet(Long id) {
+    public void deletePetById(Long id) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deletePet'");
     }
