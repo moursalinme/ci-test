@@ -44,13 +44,24 @@ public class PetServiceImplTest {
     private Pet testPet;
     private PetRequest testPetRequest;
     private PetResponse testPetResponse;
+    private Species testSpecies;
+    private Species updatedSpecies;
+    private PetRequest updatePetRequest;
+    private Pet updatedPet;
 
     @BeforeEach
     void setUp() {
+
+        testSpecies = Species.builder()
+                .id(1L)
+                .name("Test species")
+                .version(1)
+                .build();
+
         testPet = Pet.builder()
                 .id(1L)
                 .name("Test Pet")
-                .species(Species.builder().id(1L).name("Test species").build())
+                .species(testSpecies)
                 .age(5)
                 .gender(PetGender.MALE)
                 .breed("Test breed")
@@ -58,11 +69,55 @@ public class PetServiceImplTest {
                 .version(1)
                 .build();
 
-        testPetRequest = new PetRequest("Test Pet", "Test species", 5, "Test breed", PetGender.MALE,
-                PetStatus.AVAILABLE);
+        testPetRequest = PetRequest.builder()
+                .name("Test Pet")
+                .age(5)
+                .species("Test species")
+                .gender(PetGender.MALE)
+                .status(PetStatus.AVAILABLE)
+                .breed("Test breed")
+                .speciesEntity(testSpecies)
+                .build();
 
         testPetResponse = new PetResponse(1L, "Test Pet", "Test species", 5, "Test breed", PetGender.MALE.toString(),
                 PetStatus.AVAILABLE.toString(), 1);
+
+        testPetResponse = PetResponse.builder()
+                .id(1L)
+                .name(testPetRequest.getName())
+                .species(testPetRequest.getSpecies())
+                .age(testPetRequest.getAge())
+                .breed(testPetRequest.getBreed())
+                .gender(PetGender.MALE.toString())
+                .status(PetStatus.AVAILABLE.toString())
+                .version(1)
+                .build();
+
+        updatedSpecies = Species.builder()
+                .id(2L)
+                .name("updated species")
+                .version(2)
+                .build();
+
+        updatePetRequest = PetRequest.builder()
+                .name("update Pet")
+                .age(10)
+                .gender(PetGender.FEMALE)
+                .status(PetStatus.SOLD)
+                .breed("update breed")
+                .speciesEntity(updatedSpecies)
+                .build();
+
+        updatedPet = Pet.builder()
+                .id(1L)
+                .name("update Pet")
+                .species(updatedSpecies)
+                .age(10)
+                .gender(PetGender.FEMALE)
+                .status(PetStatus.SOLD)
+                .breed("update breed")
+                .version(1)
+                .build();
     }
 
     @Test
@@ -158,5 +213,37 @@ public class PetServiceImplTest {
     void deletePet_NegativeId_ShouldThrowIllegalArgumentException() {
         assertThrows(IllegalArgumentException.class,
                 () -> petService.deletePetById(-1L));
+    }
+
+    @Test
+    void updatePet_ValidPet_ShouldReturnUpdatedPet() {
+        Long petId = 1L;
+        when(petRepository.findById(1L)).thenReturn(Optional.of(testPet));
+        when(petRepository.save(updatedPet)).thenReturn(updatedPet);
+
+        PetResponse response = petService.updatePet(petId, updatePetRequest);
+
+        assertEquals(Mapper.toPetResponse(updatedPet), response);
+        verify(petRepository).findById(petId);
+        verify(petRepository).save(any(Pet.class));
+    }
+
+    @Test
+    void updatePet_PetNotFound_ShouldThrowPetNotFoundException() {
+        Long petId = 1L;
+        when(petRepository.findById(petId)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> petService.updatePet(petId, updatePetRequest));
+        verify(petRepository).findById(petId);
+    }
+
+    @Test
+    void updatePet_InvalidId_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> petService.updatePet(null, updatePetRequest));
+    }
+
+    @Test
+    void updatePet_NullPetRequest_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () -> petService.updatePet(1L, null));
     }
 }

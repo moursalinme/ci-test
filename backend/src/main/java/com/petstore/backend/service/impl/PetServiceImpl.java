@@ -2,17 +2,19 @@ package com.petstore.backend.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.petstore.backend.dto.request.PetRequest;
 import com.petstore.backend.dto.response.PetResponse;
 import com.petstore.backend.entity.Pet;
-import com.petstore.backend.entity.Species;
 import com.petstore.backend.mapper.Mapper;
 import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.PetService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -45,30 +47,41 @@ public class PetServiceImpl implements PetService {
             throw new IllegalArgumentException("PetRequest cannot be null");
         }
 
-        Species petSpecies = Species.builder()
-                .name(pet.getSpecies())
-                .build();
-
         Pet petEntity = Pet.builder()
                 .name(pet.getName())
                 .age(pet.getAge())
                 .breed(pet.getBreed())
                 .gender(pet.getGender())
                 .status(pet.getStatus())
-                .species(petSpecies)
+                .species(pet.getSpeciesEntity())
                 .build();
         petEntity = petRepository.save(petEntity);
         return Mapper.toPetResponse(petEntity);
     }
 
     @Override
-    public PetResponse updatePet(Long id, PetRequest pet) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updatePet'");
+    @Transactional
+    public PetResponse updatePet(Long id, PetRequest petRequest) {
+        if (id == null || petRequest == null) {
+            throw new IllegalArgumentException("Pet ID and Pet request must not be null");
+        }
+
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + id));
+
+        pet.setName(petRequest.getName());
+        pet.setAge(petRequest.getAge());
+        pet.setBreed(petRequest.getBreed());
+        pet.setGender(petRequest.getGender());
+        pet.setStatus(petRequest.getStatus());
+        pet.setSpecies(petRequest.getSpeciesEntity());
+
+        Pet updatedPet = petRepository.save(pet);
+        return Mapper.toPetResponse(updatedPet);
     }
 
     @Override
-    public void deletePetById(Long id) {
+    public boolean deletePetById(Long id) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("Id is invalid or null");
         }
@@ -77,6 +90,13 @@ public class PetServiceImpl implements PetService {
             throw new EntityNotFoundException("Pet with ID " + id + " not found");
         }
         petRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public Page<PetResponse> getPaginatedPets(Pageable pageable) {
+        return petRepository.findAll(pageable)
+                .map(Mapper::toPetResponse);
     }
 
 }
