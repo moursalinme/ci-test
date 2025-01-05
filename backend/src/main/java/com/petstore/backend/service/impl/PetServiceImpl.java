@@ -12,6 +12,7 @@ import com.petstore.backend.mapper.Mapper;
 import com.petstore.backend.repository.PetRepository;
 import com.petstore.backend.service.PetService;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,8 +29,12 @@ public class PetServiceImpl implements PetService {
 
     @Override
     public PetResponse getPetById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPetById'");
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Id is invalid or null");
+        }
+        return petRepository.findById(id)
+                .map(Mapper::toPetResponse)
+                .orElseThrow(() -> new EntityNotFoundException("Pet with id " + id + " not found"));
     }
 
     @Override
