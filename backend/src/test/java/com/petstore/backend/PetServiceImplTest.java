@@ -44,6 +44,7 @@ public class PetServiceImplTest {
     private Pet testPet;
     private PetRequest testPetRequest;
     private PetResponse testPetResponse;
+    private Species testSpecies;
 
     @BeforeEach
     void setUp() {
@@ -58,8 +59,14 @@ public class PetServiceImplTest {
                 .version(1)
                 .build();
 
+        testSpecies = Species.builder()
+                .id(1L)
+                .name("Test Species")
+                .version(1)
+                .build();
+
         testPetRequest = new PetRequest("Test Pet", "Test species", 5, "Test breed", PetGender.MALE,
-                PetStatus.AVAILABLE);
+                PetStatus.AVAILABLE, testSpecies);
 
         testPetResponse = new PetResponse(1L, "Test Pet", "Test species", 5, "Test breed", PetGender.MALE.toString(),
                 PetStatus.AVAILABLE.toString(), 1);
