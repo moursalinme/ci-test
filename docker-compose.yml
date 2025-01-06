@@ -33,6 +33,16 @@ services:
       - app-network
       - database-network
 
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ci-frontend-container
+    ports:
+      - 3000:5173
+    networks:
+      - app-network
+
 volumes:
   postgres:
 
