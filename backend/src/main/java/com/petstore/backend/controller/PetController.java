@@ -38,7 +38,7 @@ public class PetController {
     // return ResponseEntity.ok().body(pets);
     // }
 
-    @GetMapping("/pets/{page}")
+    @GetMapping("/pets/page/{page}")
     public ResponseEntity<PetPageResponse> getPetsByPage(@PathVariable int page,
             @RequestParam(defaultValue = "10") int size) {
 
