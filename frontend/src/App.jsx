@@ -9,9 +9,9 @@ function App() {
     <React.Fragment>
       <Navbar />
       <Routes>
-        <Route path="/" element={LandingPage} />
-        <Route path="/add" element={CreatePetPage} />
-        <Route path="/edit" element={EditPage} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/add" element={<CreatePetPage />} />
+        <Route path="/edit" element={<EditPage />} />
       </Routes>
     </React.Fragment>
   );
