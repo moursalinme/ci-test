@@ -1,5 +1,11 @@
+import PetList from "../component/PetList";
+
 function LandingPage() {
-  return <div>LandingPage</div>;
+  return (
+    <>
+      <PetList />
+    </>
+  );
 }
 
 export default LandingPage;

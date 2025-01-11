@@ -3,16 +3,21 @@ import { FaPaw } from "react-icons/fa6";
 import { HiOutlineTag } from "react-icons/hi";
 import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 
-const PetCard = () => {
-  const petResponse = {
-    id: 1,
-    name: "MAX",
-    species: "Dog",
-    age: 2,
-    gender: "Male",
-    status: "AVAILABLE",
-    version: 1,
-  };
+import { PropTypes } from "prop-types";
+
+PetCard.propTypes = {
+  petResponse: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    age: PropTypes.number.isRequired,
+    gender: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    version: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
+function PetCard({ petResponse }) {
   return (
     <div className="border rounded-lg p-4 hover:shadow-lg w-60 h-48 overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white cursor-pointer">
       <div className="flex items-center mb-2 justify-center">
@@ -44,6 +49,6 @@ const PetCard = () => {
       </div>
     </div>
   );
-};
+}
 
 export default PetCard;
