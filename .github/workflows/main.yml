@@ -4,15 +4,15 @@ on:
   push:
     branches: ["main", "dev"]
     paths:
-      - "/backend/src/**"
-      - "/backend/pom.xml"
-      - "/database/init.sql"
+      - "backend/src/**"
+      - "backend/pom.xml"
+      - "database/init.sql"
   pull_request:
     branches: ["main", "dev"]
     paths:
-      - "/backend/src/**"
-      - "/backend/pom.xml"
-      - "/database/init.sql"
+      - "backend/src/**"
+      - "backend/pom.xml"
+      - "database/init.sql"
 
   workflow_dispatch:
     inputs:
