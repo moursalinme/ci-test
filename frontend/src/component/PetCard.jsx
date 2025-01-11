@@ -1,11 +1,12 @@
 import { AiOutlineClockCircle } from "react-icons/ai";
 import { FaPaw } from "react-icons/fa6";
 import { HiOutlineTag } from "react-icons/hi";
+import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 
 const PetCard = () => {
   const petResponse = {
     id: 1,
-    name: "Max",
+    name: "MAX",
     species: "Dog",
     age: 2,
     gender: "Male",
@@ -13,8 +14,9 @@ const PetCard = () => {
     version: 1,
   };
   return (
-    <div className="border rounded-lg p-4 hover:shadow-lg max-w-xs overflow-hidden m-10">
+    <div className="border rounded-lg p-4 hover:shadow-lg w-60 h-48 overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white cursor-pointer">
       <div className="flex items-center mb-2 justify-center">
+        <MdOutlineDriveFileRenameOutline className="mr-2" />
         <h2 className="font-bold text-lg">{petResponse.name}</h2>
       </div>
       <div className="flex items-center mb-1 text-lg">
