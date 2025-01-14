@@ -29,7 +29,7 @@ public class Mapper {
         if (years < 1) {
             return months + " month(s)";
         }
-        return years + " year(s) " + months + " month(s)";
+        return years + " year(s) and " + months + " month(s)";
     }
 
 }
