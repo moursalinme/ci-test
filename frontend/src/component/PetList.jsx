@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PetCard from "./PetCard";
 
 function PetList() {
@@ -7,36 +9,36 @@ function PetList() {
   const [totalPages, setTotalPages] = useState(0);
   const [err, setErr] = useState(null);
   const baseURL = import.meta.env;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPets = async () => {
       try {
-        console.log(
-          `ja paisi = ${baseURL.VITE_API_BASE_URL}/v1/pets/page/${pageNo}`
-        );
-        const response = await fetch(
+        const response = await axios.get(
           `${baseURL.VITE_API_BASE_URL}/v1/pets/page/${pageNo}`
         );
-        if (!response.ok) {
-          setErr("Something went wrong! Try again by refreshing the page.");
-          return;
-        }
-        console.log(response);
-        const body = await response.json();
-        console.log(body);
-        setPets(body.pets);
-        setTotalPages(body.totalPages);
+        setPets(response.data.pets);
+        setErr(null);
+        setTotalPages(response.data.totalPages);
+        // eslint-disable-next-line no-unused-vars
       } catch (err) {
-        console.log(err);
-        setErr("Something went wrong. Maybe the page no is invalid.");
+        setErr("Something went wrong! Try again by refreshing the page.");
       }
     };
-
     fetchPets();
   }, [pageNo]);
 
+  const handlePetClick = (petResponse) => {
+    console.log("handleCLick -> ", petResponse);
+    navigate("/edit", { state: { petResponse } });
+  };
+
   const allPets = pets.map((pet) => {
-    return <PetCard petResponse={pet} key={pet.id} />;
+    return (
+      <div onClick={() => handlePetClick(pet)} key={pet.id}>
+        <PetCard petResponse={pet} />
+      </div>
+    );
   });
 
   return (
