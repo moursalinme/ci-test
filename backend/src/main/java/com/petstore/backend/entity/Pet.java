@@ -1,5 +1,7 @@
 package com.petstore.backend.entity;
 
+import java.time.LocalDate;
+
 import com.petstore.backend.enums.PetGender;
 import com.petstore.backend.enums.PetStatus;
 
@@ -41,8 +43,10 @@ public class Pet {
     @JoinColumn(name = "species_id", nullable = false)
     private Species species;
 
+    // @Column(nullable = false)
+    // private Integer age;
     @Column(nullable = false)
-    private Integer age;
+    private LocalDate brithday;
 
     private String breed;
 
