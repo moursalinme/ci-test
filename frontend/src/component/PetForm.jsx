@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function PetForm() {
   const [formData, setFormData] = useState({
@@ -12,18 +14,86 @@ function PetForm() {
     status: "",
   });
 
+  const navigate = useNavigate();
+
+  const [invalidAge, setInvalidAge] = useState(false);
+  const [errorResponse, setErrorResponse] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const isValidAge = (day, month, year) => {
+    const date = new Date(year, month - 1, day);
+
+    if (
+      date.getDate() !== Number(day) ||
+      date.getMonth() !== Number(month - 1) ||
+      date.getFullYear() !== Number(year)
+    ) {
+      console.log("Here");
+      return false;
+    }
+    const today = new Date();
+
+    date.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    if (date < today) {
+      return true;
+    }
+    return false;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
+
+    if (!isValidAge(formData.bday, formData.bmonth, formData.byear)) {
+      setInvalidAge("invalid age " + true);
+      return;
+    }
+
+    setInvalidAge(false);
+
+    const petRequest = {
+      name: formData.name,
+      species: formData.species,
+      breed: formData.breed,
+      birthday: `${String(Number(formData.bday)).padStart(2, 0)}-${String(
+        Number(formData.bmonth)
+      ).padStart(2, 0)}-${String(Number(formData.byear)).padStart(4, 0)}`,
+      gender: formData.gender,
+      status: formData.status,
+    };
+
+    const createPet = async (reqBody) => {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_BASE_URL}/v1/pets`,
+          reqBody
+        );
+        setErrorResponse(false);
+        navigate("success", { state: response.data });
+        // eslint-disable-next-line no-unused-vars
+      } catch (err) {
+        setErrorResponse(true);
+      }
+    };
+
+    createPet(petRequest);
   };
 
   return (
     <div className="text-[#18181B] px-10 mb-10">
+      {errorResponse && (
+        <div className="w-full flex justify-center mt-2">
+          <h1 className="bg-red-600 px-4 font-medium text-white p-2 rounded-md">
+            Failed to create new Pet! Please try again and make sure the
+            information is correct.
+          </h1>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         className="max-w-lg mx-auto p-10 mt-5 shadow-lg rounded-lg bg-background border-2 border-zinc-200"
@@ -120,6 +190,13 @@ function PetForm() {
               required
             />
           </div>
+          {invalidAge && (
+            <div className="w-full flex justify-center mt-2">
+              <h1 className="bg-red-600 text-white p-2 rounded-md">
+                The age is not valid!
+              </h1>
+            </div>
+          )}
         </div>
 
         <div className="mb-4">

@@ -4,6 +4,7 @@ import Navbar from "./component/Navbar";
 import CreatePetPage from "./page/CreatePetPage";
 import EditPage from "./page/EditPage";
 import LandingPage from "./page/LandingPage";
+import PetCreationPage from "./page/PetCreationPage";
 function App() {
   return (
     <React.Fragment>
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/add" element={<CreatePetPage />} />
         <Route path="/edit" element={<EditPage />} />
+        <Route path="/add/success" element={<PetCreationPage />} />
       </Routes>
     </React.Fragment>
   );

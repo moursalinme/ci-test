@@ -10,7 +10,7 @@ PetCard.propTypes = {
     id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
     species: PropTypes.string.isRequired,
-    age: PropTypes.number.isRequired,
+    age: PropTypes.string.isRequired,
     gender: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     version: PropTypes.number.isRequired,
@@ -19,18 +19,20 @@ PetCard.propTypes = {
 
 function PetCard({ petResponse }) {
   return (
-    <div className="border rounded-lg p-4 hover:shadow-lg w-60 h-48 overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white cursor-pointer">
+    <div className="border-2 rounded-lg p-4 hover:shadow-lg w-60 h-48 overflow-hidden hover:-translate-y-1 transition-transform duration-200 bg-white cursor-pointer">
       <div className="flex items-center mb-2 justify-center">
         <MdOutlineDriveFileRenameOutline className="mr-2" />
         <h2 className="font-bold text-lg">{petResponse.name}</h2>
       </div>
-      <div className="flex items-center mb-1 text-lg">
+      <div className="flex items-center mb-1 text-lg font-medium">
         <FaPaw className=" text-gray-500 mr-2" />
         <span className="text-gray-700">{petResponse.species}</span>
       </div>
       <div className="flex items-center mb-1 text-lg">
         <AiOutlineClockCircle className=" text-gray-500 mr-2" />
-        <span className="text-gray-700">{petResponse.age} years old</span>
+        <span className="text-gray-700 text-base font-medium">
+          {petResponse.age}
+        </span>
       </div>
       <div className="pt-2 flex items-center justify-center">
         <span
