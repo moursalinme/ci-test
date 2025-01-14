@@ -1,5 +1,7 @@
 package com.petstore.backend.dto.request;
 
+import java.time.LocalDate;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.petstore.backend.entity.Species;
 import com.petstore.backend.enums.PetGender;
@@ -7,7 +9,7 @@ import com.petstore.backend.enums.PetStatus;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,9 +27,9 @@ public class PetRequest {
     @NotBlank(message = "Species is required")
     private String species;
 
-    @NotNull(message = "Age is required")
-    @Positive(message = "Age must be a positive number")
-    private Integer age;
+    @NotNull(message = "Birthday is required")
+    @Past(message = "Birthday must be a past date")
+    private LocalDate birthday;
 
     @NotBlank(message = "Breed is required")
     private String breed;
