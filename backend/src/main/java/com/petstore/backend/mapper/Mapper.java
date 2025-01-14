@@ -13,7 +13,7 @@ public class Mapper {
                 .id(pet.getId())
                 .name(pet.getName())
                 .species(pet.getSpecies().getName())
-                // .age()
+                .age(calculateAge(pet.getBrithday()))
                 .breed(pet.getBreed())
                 .gender(pet.getGender().name())
                 .status(pet.getStatus().name())
@@ -21,13 +21,13 @@ public class Mapper {
                 .build();
     }
 
-    public String calculateAge(LocalDate birthDate) {
+    public static String calculateAge(LocalDate birthDate) {
         Period period = Period.between(birthDate, LocalDate.now());
         int years = period.getYears();
         int months = period.getMonths();
 
         if (years < 1) {
-            return months + " months";
+            return months + " month(s)";
         }
         return years + " year(s) " + months + " month(s)";
     }
