@@ -1,5 +1,9 @@
 package com.petstore.backend.dto.response;
 
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +19,8 @@ public class PetResponse {
     private String name;
     private String species;
     private String age;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate birthday;
     private String breed;
     private String gender;
     private String status;
