@@ -18,3 +18,5 @@ spring:
 
 server:
   port: ${SERVER_PORT}
+
+FRONTEND_URL: ${FRONTEND_URL}

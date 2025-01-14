@@ -1,14 +1,13 @@
-version: "3.8"
-
 services:
   database:
-    image: postgres:17-alpine
+    build:
+      context: ./database
+      dockerfile: Dockerfile
     container_name: ci-db-container
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres:/var/lib/postgresql/data
     networks:
       - database-network
@@ -25,6 +24,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SERVER_PORT: ${SERVER_PORT}
+      FRONTEND_URL: http://localhost:3000
     ports:
       - ${SERVER_PORT}:8080
     depends_on:
@@ -38,10 +38,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: ci-frontend-container
+    environment:
+      VITE_API_BASE_URL: http://localhost:${SERVER_PORT}/api
     ports:
       - 3000:5173
     networks:
       - app-network
+    depends_on:
+      - database
+      - backend
 
 volumes:
   postgres:
