@@ -74,7 +74,7 @@ function PetForm() {
           reqBody
         );
         setErrorResponse(false);
-        navigate("success", { state: response.data });
+        navigate("success", { state: { petResponse: response.data } });
         // eslint-disable-next-line no-unused-vars
       } catch (err) {
         setErrorResponse(true);

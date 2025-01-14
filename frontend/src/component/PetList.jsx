@@ -28,13 +28,14 @@ function PetList() {
     fetchPets();
   }, [pageNo]);
 
-  const handlePetClick = () => {
-    navigate("/add");
+  const handlePetClick = (petResponse) => {
+    console.log("handleCLick -> ", petResponse);
+    navigate("/edit", { state: { petResponse } });
   };
 
   const allPets = pets.map((pet) => {
     return (
-      <div onClick={handlePetClick} key={pet.id}>
+      <div onClick={() => handlePetClick(pet)} key={pet.id}>
         <PetCard petResponse={pet} />
       </div>
     );

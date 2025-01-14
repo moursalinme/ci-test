@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/add" element={<CreatePetPage />} />
         <Route path="/edit" element={<EditPage />} />
-        <Route path="/add/success" element={<PetCreationPage />} />
+        <Route path="/success" element={<PetCreationPage />} />
       </Routes>
     </React.Fragment>
   );
