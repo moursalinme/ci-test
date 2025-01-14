@@ -4,7 +4,9 @@ function PetForm() {
   const [formData, setFormData] = useState({
     name: "",
     species: "",
-    age: "",
+    bday: "",
+    bmonth: "",
+    byear: "",
     breed: "",
     gender: "",
     status: "",
@@ -22,7 +24,6 @@ function PetForm() {
 
   return (
     <div className="text-[#18181B] px-10 mb-10">
-      <h1 className="pt-5 text-center text-2xl font-semibold">Pet Details</h1>
       <form
         onSubmit={handleSubmit}
         className="max-w-lg mx-auto p-10 mt-5 shadow-lg rounded-lg bg-background border-2 border-zinc-200"
@@ -36,8 +37,8 @@ function PetForm() {
             id="name"
             name="name"
             value={formData.name}
-            placeholder="Pet Name"
             onChange={handleChange}
+            placeholder="Pet Name"
             className="mt-1 block w-full p-2 border border-[#E4E4E7] rounded-md shadow-sm focus:ring-[#A1A1AA] focus:border-[#A1A1AA]"
             required
           />
@@ -75,16 +76,20 @@ function PetForm() {
           />
         </div>
 
-        <div className="mb-4 flex flex-wrap justify-start items-center gap-6 pt-4">
-          <div className="block pb-1 font-medium text-start">Birthday</div>
+        <div className="mb-4 flex flex-wrap justify-start items-center gap-6 pt-4 font-medium ">
+          <div className="block pb-1  text-start">Birthday</div>
           <div>
             {/* <label className="block pb-1 font-medium">Day</label> */}
             <input
               type="number"
               min={1}
               max={31}
+              name="bday"
+              value={formData.bday}
+              onChange={handleChange}
               placeholder="Day"
-              className="w-20 p-2 border border-input rounded-md shadow-sm border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner"
+              className="w-20 p-2 border border-input rounded-md shadow-sm border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner text-center"
+              required
             />
           </div>
           <div>
@@ -92,9 +97,13 @@ function PetForm() {
             <input
               type="number"
               min={1}
+              name="bmonth"
+              value={formData.bmonth}
+              onChange={handleChange}
               placeholder="Month"
               max={12}
-              className="w-20 p-2 border border-input rounded-md shadow-sm  border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner"
+              className="w-20 p-2 border border-input rounded-md shadow-sm  border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner text-center"
+              required
             />
           </div>
           <div>
@@ -103,8 +112,12 @@ function PetForm() {
               type="number"
               min={1900}
               max={2100}
+              name="byear"
+              value={formData.byear}
+              onChange={handleChange}
               placeholder="Year"
-              className="w-28 p-2 border border-input rounded-md shadow-sm  border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner"
+              className="w-28 p-2 border border-input rounded-md shadow-sm  border-[#E4E4E7]  focus:ring-[#A1A1AA] focus:border-[#A1A1AA] no-spinner text-center"
+              required
             />
           </div>
         </div>
@@ -126,6 +139,7 @@ function PetForm() {
             </option>
             <option value="MALE">Male</option>
             <option value="FEMALE">Female</option>
+            <option value="UNKNOWN">Unknown</option>
           </select>
         </div>
 
@@ -144,9 +158,9 @@ function PetForm() {
             <option value="" className="text-[#A1A1AA]">
               Select status
             </option>
-            <option value="AVAILABLE">AVAILABLE</option>
-            <option value="SOLD">SOLD</option>
-            <option value="UNDER_TREATMENT">UNDER TREATMENT</option>
+            <option value="AVAILABLE">Available</option>
+            <option value="SOLD">Sold</option>
+            <option value="UNDER_TREATMENT">Under treatment</option>
           </select>
         </div>
 
@@ -154,7 +168,7 @@ function PetForm() {
           type="submit"
           className="w-full bg-[#18181B] text-white text-sm font-medium py-2 px-4 rounded-md hover:bg-[#27272A] focus:ring-2 focus:ring-[#27272A] focus:ring-offset-2"
         >
-          Submit
+          Add pet
         </button>
       </form>
     </div>
