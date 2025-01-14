@@ -49,7 +49,7 @@ public class PetServiceImpl implements PetService {
 
         Pet petEntity = Pet.builder()
                 .name(pet.getName())
-                .age(pet.getAge())
+                .brithday(pet.getBirthday())
                 .breed(pet.getBreed())
                 .gender(pet.getGender())
                 .status(pet.getStatus())
@@ -70,7 +70,7 @@ public class PetServiceImpl implements PetService {
                 .orElseThrow(() -> new EntityNotFoundException("Pet not found with ID: " + id));
 
         pet.setName(petRequest.getName());
-        pet.setAge(petRequest.getAge());
+        pet.setBrithday(petRequest.getBirthday());
         pet.setBreed(petRequest.getBreed());
         pet.setGender(petRequest.getGender());
         pet.setStatus(petRequest.getStatus());

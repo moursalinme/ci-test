@@ -22,6 +22,7 @@ import com.petstore.backend.service.PetService;
 import com.petstore.backend.service.SpeciesService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,7 +39,7 @@ public class PetController {
     // return ResponseEntity.ok().body(pets);
     // }
 
-    @GetMapping("/pets/{page}")
+    @GetMapping("/pets/page/{page}")
     public ResponseEntity<PetPageResponse> getPetsByPage(@PathVariable int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -82,7 +83,7 @@ public class PetController {
     }
 
     @PostMapping("/pets")
-    public ResponseEntity<PetResponse> createPet(@RequestBody PetRequest pet) {
+    public ResponseEntity<PetResponse> createPet(@Valid @RequestBody PetRequest pet) {
         pet.setSpeciesEntity(speciesService.getSpeciesByName(pet.getSpecies()));
 
         PetResponse createdPet = petService.createPet(pet);
@@ -90,7 +91,7 @@ public class PetController {
     }
 
     @PatchMapping("/pets/{id}")
-    public ResponseEntity<PetResponse> updatePet(@PathVariable Long id, @RequestBody PetRequest pet) {
+    public ResponseEntity<PetResponse> updatePet(@PathVariable Long id, @Valid @RequestBody PetRequest pet) {
         pet.setSpeciesEntity(speciesService.getSpeciesByName(pet.getSpecies()));
 
         PetResponse updatedPet = petService.updatePet(id, pet);

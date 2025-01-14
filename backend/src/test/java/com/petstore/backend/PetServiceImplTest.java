@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public class PetServiceImplTest {
                 .id(1L)
                 .name("Test Pet")
                 .species(testSpecies)
-                .age(5)
+                .brithday(LocalDate.now().minusYears(5).minusMonths(10))
                 .gender(PetGender.MALE)
                 .breed("Test breed")
                 .status(PetStatus.AVAILABLE)
@@ -71,7 +72,7 @@ public class PetServiceImplTest {
 
         testPetRequest = PetRequest.builder()
                 .name("Test Pet")
-                .age(5)
+                .birthday(LocalDate.now().minusYears(5).minusMonths(10))
                 .species("Test species")
                 .gender(PetGender.MALE)
                 .status(PetStatus.AVAILABLE)
@@ -79,14 +80,12 @@ public class PetServiceImplTest {
                 .speciesEntity(testSpecies)
                 .build();
 
-        testPetResponse = new PetResponse(1L, "Test Pet", "Test species", 5, "Test breed", PetGender.MALE.toString(),
-                PetStatus.AVAILABLE.toString(), 1);
-
         testPetResponse = PetResponse.builder()
                 .id(1L)
                 .name(testPetRequest.getName())
                 .species(testPetRequest.getSpecies())
-                .age(testPetRequest.getAge())
+                .age("5y 10m")
+                .birthday(LocalDate.now().minusYears(5).minusMonths(10))
                 .breed(testPetRequest.getBreed())
                 .gender(PetGender.MALE.toString())
                 .status(PetStatus.AVAILABLE.toString())
@@ -101,7 +100,7 @@ public class PetServiceImplTest {
 
         updatePetRequest = PetRequest.builder()
                 .name("update Pet")
-                .age(10)
+                .birthday(LocalDate.now().minusYears(5).minusMonths(10))
                 .gender(PetGender.FEMALE)
                 .status(PetStatus.SOLD)
                 .breed("update breed")
@@ -112,12 +111,13 @@ public class PetServiceImplTest {
                 .id(1L)
                 .name("update Pet")
                 .species(updatedSpecies)
-                .age(10)
+                .brithday(LocalDate.now().minusYears(5).minusMonths(10))
                 .gender(PetGender.FEMALE)
                 .status(PetStatus.SOLD)
                 .breed("update breed")
                 .version(1)
                 .build();
+
     }
 
     @Test
