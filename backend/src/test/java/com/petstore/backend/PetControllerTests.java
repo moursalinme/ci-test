@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class PetControllerTests {
         testPetRequest = PetRequest.builder()
                 .name("test pet")
                 .species("test species")
-                .age(5)
+                .birthday(LocalDate.now().minusYears(5).minusMonths(10))
                 .breed("test breed")
                 .gender(PetGender.MALE)
                 .status(PetStatus.AVAILABLE)
@@ -71,7 +72,7 @@ public class PetControllerTests {
                 .id(1L)
                 .name("test pet")
                 .species("test species")
-                .age(5)
+                .age("5 year(s) and 10 month(s)")
                 .breed("test breed")
                 .gender("MALE")
                 .status("AVAILABLE")
@@ -170,7 +171,7 @@ public class PetControllerTests {
         PetRequest petToUpdate = PetRequest.builder()
                 .name("update pet")
                 .species("update species")
-                .age(10)
+                .birthday(LocalDate.now().minusYears(6).minusMonths(2))
                 .breed("update breed")
                 .gender(PetGender.FEMALE)
                 .status(PetStatus.SOLD)
@@ -181,7 +182,7 @@ public class PetControllerTests {
                 .id(1L)
                 .name("update pet")
                 .species("update species")
-                .age(10)
+                .age("6 year(s) and 2 month(s)")
                 .breed("update breed")
                 .gender("FEMALE")
                 .status("SOLD")
