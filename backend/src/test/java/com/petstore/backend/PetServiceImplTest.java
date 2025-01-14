@@ -80,15 +80,12 @@ public class PetServiceImplTest {
                 .speciesEntity(testSpecies)
                 .build();
 
-        testPetResponse = new PetResponse(1L, "Test Pet", "Test species", "5 year(s) and 10 month(s)", "Test breed",
-                PetGender.MALE.toString(),
-                PetStatus.AVAILABLE.toString(), 1);
-
         testPetResponse = PetResponse.builder()
                 .id(1L)
                 .name(testPetRequest.getName())
                 .species(testPetRequest.getSpecies())
-                .age("5 year(s) and 10 month(s)")
+                .age("5y 10m")
+                .birthday(LocalDate.now().minusYears(5).minusMonths(10))
                 .breed(testPetRequest.getBreed())
                 .gender(PetGender.MALE.toString())
                 .status(PetStatus.AVAILABLE.toString())

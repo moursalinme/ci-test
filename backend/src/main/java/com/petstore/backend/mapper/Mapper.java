@@ -14,6 +14,7 @@ public class Mapper {
                 .name(pet.getName())
                 .species(pet.getSpecies().getName())
                 .age(calculateAge(pet.getBrithday()))
+                .birthday(pet.getBrithday())
                 .breed(pet.getBreed())
                 .gender(pet.getGender().name())
                 .status(pet.getStatus().name())
@@ -27,9 +28,12 @@ public class Mapper {
         int months = period.getMonths();
 
         if (years < 1) {
-            return months + " month(s)";
+            return months + "m";
         }
-        return years + " year(s) and " + months + " month(s)";
+        if (months < 1) {
+            return years + "y";
+        }
+        return years + "y " + months + "m";
     }
 
 }
