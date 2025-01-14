@@ -2,6 +2,7 @@ package com.petstore.backend.dto.request;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.petstore.backend.entity.Species;
 import com.petstore.backend.enums.PetGender;
@@ -27,6 +28,7 @@ public class PetRequest {
     @NotBlank(message = "Species is required")
     private String species;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @NotNull(message = "Birthday is required")
     @Past(message = "Birthday must be a past date")
     private LocalDate birthday;
