@@ -18,13 +18,13 @@ services:
       dockerfile: Dockerfile
     container_name: ci-backend-container
     environment:
-      POSTGRES_DB_HOST: ${POSTGRES_DB_HOST}
+      POSTGRES_DB_HOST: ci-db-container
       POSTGRES_DB_PORT: 5432
-      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME}
+      POSTGRES_DB_NAME: pet_store
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       SERVER_PORT: ${SERVER_PORT}
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:${FRONTEND_APP_PORT}
     ports:
       - ${SERVER_PORT}:8080
     depends_on:
@@ -41,7 +41,7 @@ services:
     environment:
       VITE_API_BASE_URL: http://localhost:${SERVER_PORT}/api
     ports:
-      - 3000:5173
+      - ${FRONTEND_APP_PORT}:5173
     networks:
       - app-network
     depends_on:
