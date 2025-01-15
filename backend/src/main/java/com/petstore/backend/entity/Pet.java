@@ -46,7 +46,7 @@ public class Pet {
     // @Column(nullable = false)
     // private Integer age;
     @Column(nullable = false)
-    private LocalDate brithday;
+    private LocalDate birthday;
 
     private String breed;
 
