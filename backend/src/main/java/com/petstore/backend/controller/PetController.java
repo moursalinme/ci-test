@@ -53,7 +53,7 @@ public class PetController {
 
         Page<PetResponse> response = petService.getPaginatedPets(pageable);
 
-        if (response.getTotalPages() < page) {
+        if (response.getTotalElements() > 0 && response.getTotalPages() < page) {
             return ResponseEntity.badRequest().build();
         }
 
