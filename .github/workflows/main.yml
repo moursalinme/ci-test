@@ -77,6 +77,7 @@ jobs:
           POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           SERVER_PORT: ${{ secrets.BACKEND_SERVER_PORT }}
+          FRONTEND_URL: http://localhost:3000
         run: ./mvnw clean test
 
       - name: Upload test results
