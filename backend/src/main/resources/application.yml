@@ -20,4 +20,4 @@ spring:
 server:
   port: ${SERVER_PORT}
 
-FRONTEND_URL: ${FRONTEND_URL}
+FRONTEND_URL: ${FRONTEND_URL:http://localhost:5173}
