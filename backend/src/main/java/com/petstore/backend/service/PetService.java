@@ -21,4 +21,6 @@ public interface PetService {
     PetResponse updatePet(Long id, PetRequest pet);
 
     boolean deletePetById(Long id);
+
+    Page<PetResponse> findPetsByName(String name, Pageable pageable);
 }
