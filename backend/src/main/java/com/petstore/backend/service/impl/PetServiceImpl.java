@@ -99,4 +99,8 @@ public class PetServiceImpl implements PetService {
                 .map(Mapper::toPetResponse);
     }
 
+    public Page<PetResponse> findPetsByName(String name, Pageable pageable) {
+        Page<Pet> pets = petRepository.findByNameContainingIgnoreCase(name, pageable);
+        return pets.map(Mapper::toPetResponse);
+    }
 }

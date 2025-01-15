@@ -53,7 +53,7 @@ public class PetController {
 
         Page<PetResponse> response = petService.getPaginatedPets(pageable);
 
-        if (response.getTotalPages() < page) {
+        if (response.getTotalElements() > 0 && response.getTotalPages() < page) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -107,6 +107,33 @@ public class PetController {
         if (!deleted)
             return ResponseEntity.internalServerError().build();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/pets/search/{name}/page/{page}")
+    public ResponseEntity<PetPageResponse> getMethodName(@PathVariable String name,
+            @RequestParam(defaultValue = "10") int size, @PathVariable int page) {
+        if (page <= 0 || size <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        size = Math.min(size, 100);
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("id"));
+
+        Page<PetResponse> response = petService.findPetsByName(name, pageable);
+
+        if (response.getTotalElements() > 0 && response.getTotalPages() < page) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        PetPageResponse petPageResponse = PetPageResponse.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .totalPages(response.getTotalPages())
+                .totalPets(Math.toIntExact(response.getTotalElements()))
+                .pets(response.getContent())
+                .build();
+
+        return ResponseEntity.ok().body(petPageResponse);
     }
 
 }
