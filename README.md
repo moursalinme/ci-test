@@ -34,13 +34,13 @@ A full-stack web application for managing pets in a pet store.
 1. Clone the repository
 
    ```sh
-   git clone https://github.com/moursalinme/ci-test.git
+   git clone https://github.com/moursalinme/pet-store.git
    ```
 
 2. Navigate to the project folder
 
    ```sh
-   cd ci-test
+   cd pet-store
    ```
 
 3. Create a `.env` file and add the following properties.
@@ -61,12 +61,10 @@ A full-stack web application for managing pets in a pet store.
    FRONTEND_APP_PORT=3000
    ```
 
-4. Run the follwing command within the directory. It will start at **port 8080**. You can change the port in the configuration if needed.
+4. Run the follwing command within the directory.
 
    ```sh
    docker-compose up
    ```
 
-To visit the app, type: `http://localhost:3000`
-
-Instead of 3000, use the port number you set as `FRONTEND_APP_PORT`.
+To visit the app, browse to: `http://localhost:<FRONTEND_APP_PORT>`
